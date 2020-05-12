@@ -13,6 +13,7 @@ function App() {
         {id: v1(), title: "REACT", isDone: false}
     ]);
 
+    // Фильтрация тасок
     let [filter, setFilter] = useState<FilterValueType>('all');
 
     let taskForTodoList = tasks;
@@ -30,9 +31,17 @@ function App() {
         setFilter(value);
     }
 
+    // Удаление тасок
     const removeTask = (id: string) => {
         let filteredTasks = tasks.filter((task) => task.id !== id);
         setTasks(filteredTasks)
+    }
+
+    // Добавление таски
+    const addTask = (title:string) => {
+        let task = {id: v1(), title, isDone: false};
+        let newArr= [task, ...tasks];
+        setTasks(newArr)
     }
 
     return (
@@ -40,7 +49,8 @@ function App() {
             <TodoList title={"What to learn"}
                       tasks={taskForTodoList}
                       removeTask={removeTask}
-                      changeFilter={changeFilter}/>
+                      changeFilter={changeFilter}
+                      addTask={addTask}/>
         </div>
     );
 }
