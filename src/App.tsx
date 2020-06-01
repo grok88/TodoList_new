@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskType, TodoList} from "./TodoList";
 import {v1} from 'uuid'
+import {AddItemForm} from "./AddItemForm";
 
 export type FilterValueType = "all" | "active" | "completed";
 
@@ -12,7 +13,7 @@ type TodoList = {
 }
 
 type TaskStateType = {
-    [key:string]:Array<TaskType>;
+    [key: string]: Array<TaskType>;
 }
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
     });
 
 
-    const changeStatus = (id: string, isDone: boolean,todoListId: string) => {
+    const changeStatus = (id: string, isDone: boolean, todoListId: string) => {
         let todoList = tasks[todoListId];
         let task = todoList.find(elem => elem.id === id);
 
@@ -59,14 +60,14 @@ function App() {
     }
 
     // Удаление тасок
-    const removeTask = (id: string,todoListId: string) => {
+    const removeTask = (id: string, todoListId: string) => {
         let todoList = tasks[todoListId];
         tasks[todoListId] = todoList.filter((task) => task.id !== id);
         setTasks({...tasks});
     }
 
     // Добавление таски
-    const addTask = (title: string,todoListId: string) => {
+    const addTask = (title: string, todoListId: string) => {
         let task = {id: v1(), title, isDone: false};
         let todoList = tasks[todoListId];
         tasks[todoListId] = [task, ...todoList];
@@ -74,16 +75,24 @@ function App() {
     }
 
     // Удаление таски-листа
-
-    const removeTodoList = (todoListId:string) => {
+    const removeTodoList = (todoListId: string) => {
         let deleteTodoList = todoLists.filter(elem => elem.id !== todoListId);
         setTodoLists(deleteTodoList);
         delete tasks[todoListId];
         setTasks({...tasks});
     }
+    // Добавление таски-листа
+    const addTodoList = (title: string) => {
+        const newTodoList: TodoList = {id: v1(), title, filter: 'all'};
+        setTodoLists([newTodoList, ...todoLists]);
+        setTasks({...tasks, [newTodoList.id]: []});
+    }
 
     return (
         <div className="App">
+
+            <AddItemForm addItem={addTodoList}/>
+
             {
                 todoLists.map((tl) => {
 
