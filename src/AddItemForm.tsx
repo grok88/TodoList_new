@@ -1,34 +1,37 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 
-type AddItemFormPropsType = {
-    addItem: (title: string) => void,
 
+type AddItemFormType = {
+    addItem: (title: string) => void,
 }
 
-export const AddItemForm = (props: AddItemFormPropsType) => {
+export const AddItemForm = (props: AddItemFormType) => {
     let [valueTask, setValueTask] = useState<string>('');
     let [error, setError] = useState<string | null>(null);
 
-    // ..Контролируемое поле ввода
+
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setError(null);
         setValueTask(e.currentTarget.value)
     }
-    // При нажатии на enter добавляем таску
+
+
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.charCode === 13) {
             props.addItem(valueTask);
             setValueTask('');
         }
     }
-    // При нажатиит кнопки добавляем таску
-    const addTaskHandler = () => {
+
+
+    const addItemHandler = () => {
         if (valueTask.trim()) {
             props.addItem(valueTask);
+            setValueTask('');
         } else {
             setError('Title is required');
         }
-        setValueTask('');
+
     }
 
     return (
@@ -38,7 +41,7 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
                    onKeyPress={onKeyPressHandler}
                    className={error ? 'error' : ''}
             />
-            <button onClick={addTaskHandler}>+
+            <button onClick={addItemHandler}>+
             </button>
             {error && <div className={'error-message'}>{error}</div>}
         </div>

@@ -41,13 +41,33 @@ function App() {
     });
 
 
+    // изменение чекбокса таски
     const changeStatus = (id: string, isDone: boolean, todoListId: string) => {
-        let todoList = tasks[todoListId];
-        let task = todoList.find(elem => elem.id === id);
-
+        let todoTasks = tasks[todoListId];
+        let task = todoTasks.find(elem => elem.id === id);
         if (task) {
             task.isDone = isDone;
             setTasks({...tasks});
+        }
+    }
+    // Изменение тайтла todoList
+    const changeTitleTodoList = (todoListId: string, title: string) => {
+        const todoList = todoLists.find(tl => tl.id === todoListId);
+        if (todoList) {
+            todoList.title = title;
+        }
+        setTodoLists([...todoLists]);
+    }
+
+    // Изменение тайтла таски
+    const changeTitle = (id: string, todoListId: string, title: string) => {
+        let todoTasks = tasks[todoListId];
+        let task = todoTasks.find(elem => elem.id === id);
+        if (task) {
+            task.title = title;
+            setTasks({
+                ...tasks
+            });
         }
     }
 
@@ -81,11 +101,19 @@ function App() {
         delete tasks[todoListId];
         setTasks({...tasks});
     }
-    // Добавление таски-листа
+
+    // Добавление таски
     const addTodoList = (title: string) => {
-        const newTodoList: TodoList = {id: v1(), title, filter: 'all'};
-        setTodoLists([newTodoList, ...todoLists]);
-        setTasks({...tasks, [newTodoList.id]: []});
+        let todoList: TodoList = {
+            id: v1(),
+            title,
+            filter: 'all'
+        }
+        setTodoLists([todoList, ...todoLists]);
+        setTasks({
+            ...tasks,
+            [todoList.id]: []
+        });
     }
 
     return (
@@ -115,6 +143,8 @@ function App() {
                         addTask={addTask}
                         changeStatus={changeStatus}
                         removeTodoList={removeTodoList}
+                        changeTitle={changeTitle}
+                        changeTitleTodoList={changeTitleTodoList}
                     />
                 })
             }
@@ -123,3 +153,4 @@ function App() {
 }
 
 export default App;
+
