@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskType, TodoList} from "./TodoList";
 import {v1} from 'uuid'
+import {AddItemForm} from "./AddItemForm";
 
 export type FilterValueType = "all" | "active" | "completed";
 
@@ -12,7 +13,7 @@ type TodoList = {
 }
 
 type TaskStateType = {
-    [key:string]:Array<TaskType>;
+    [key: string]: Array<TaskType>;
 }
 
 function App() {
@@ -39,14 +40,34 @@ function App() {
         ],
     });
 
-
-    const changeStatus = (id: string, isDone: boolean,todoListId: string) => {
-        let todoList = tasks[todoListId];
-        let task = todoList.find(elem => elem.id === id);
+    // изменение чекбокса таски
+    const changeStatus = (id: string, isDone: boolean, todoListId: string) => {
+        let todoTasks = tasks[todoListId];
+        let task = todoTasks.find(elem => elem.id === id);
 
         if (task) {
             task.isDone = isDone;
             setTasks({...tasks});
+        }
+    }
+    // Изменение тайтла todoList
+    const changeTitleTodoList = (todoListId: string, title: string) => {
+        const todoList = todoLists.find(tl => tl.id === todoListId);
+        if (todoList) {
+            todoList.title = title;
+        }
+        setTodoLists([...todoLists]);
+    }
+
+    // Изменение тайтла таски
+    const changeTitle = (id: string, todoListId: string, title: string) => {
+        let todoTasks = tasks[todoListId];
+        let task = todoTasks.find(elem => elem.id === id);
+        if (task) {
+            task.title = title;
+            setTasks({
+                ...tasks
+            });
         }
     }
 
@@ -59,14 +80,14 @@ function App() {
     }
 
     // Удаление тасок
-    const removeTask = (id: string,todoListId: string) => {
+    const removeTask = (id: string, todoListId: string) => {
         let todoList = tasks[todoListId];
         tasks[todoListId] = todoList.filter((task) => task.id !== id);
         setTasks({...tasks});
     }
 
     // Добавление таски
-    const addTask = (title: string,todoListId: string) => {
+    const addTask = (title: string, todoListId: string) => {
         let task = {id: v1(), title, isDone: false};
         let todoList = tasks[todoListId];
         tasks[todoListId] = [task, ...todoList];
@@ -75,15 +96,29 @@ function App() {
 
     // Удаление таски-листа
 
-    const removeTodoList = (todoListId:string) => {
+    const removeTodoList = (todoListId: string) => {
         let deleteTodoList = todoLists.filter(elem => elem.id !== todoListId);
         setTodoLists(deleteTodoList);
         delete tasks[todoListId];
         setTasks({...tasks});
     }
+    // Добавление таски
+    const addTodoList = (title: string) => {
+        let todoList: TodoList = {
+            id: v1(),
+            title,
+            filter: 'all'
+        }
+        setTodoLists([todoList, ...todoLists]);
+        setTasks({
+            ...tasks,
+            [todoList.id]: []
+        });
+    }
 
     return (
         <div className="App">
+            <AddItemForm addItem={addTodoList}/>
             {
                 todoLists.map((tl) => {
 
@@ -106,6 +141,8 @@ function App() {
                         addTask={addTask}
                         changeStatus={changeStatus}
                         removeTodoList={removeTodoList}
+                        changeTitle={changeTitle}
+                        changeTitleTodoList={changeTitleTodoList}
                     />
                 })
             }
@@ -114,3 +151,4 @@ function App() {
 }
 
 export default App;
+
