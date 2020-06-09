@@ -1,4 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
+import {Button, TextField, IconButton} from "@material-ui/core";
+import { AddBox } from "@material-ui/icons";
 
 
 type AddItemFormType = {
@@ -18,8 +20,12 @@ export const AddItemForm = (props: AddItemFormType) => {
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.charCode === 13) {
-            props.addItem(valueTask);
-            setValueTask('');
+            if (valueTask.trim()) {
+                props.addItem(valueTask);
+                setValueTask('');
+            } else {
+                setError('Title is required');
+            }
         }
     }
 
@@ -36,14 +42,29 @@ export const AddItemForm = (props: AddItemFormType) => {
 
     return (
         <div>
-            <input value={valueTask}
+          {/*  <input
+
+                value={valueTask}
                    onChange={onChangeHandler}
                    onKeyPress={onKeyPressHandler}
                    className={error ? 'error' : ''}
+            />*/}
+            <TextField
+                variant={"outlined"}
+                label={"Title"}
+                helperText={error}
+                error={!!error}
+                value={valueTask}
+                onChange={onChangeHandler}
+                onKeyPress={onKeyPressHandler}
+               // className={error ? 'error' : ''}
             />
-            <button onClick={addItemHandler}>+
-            </button>
-            {error && <div className={'error-message'}>{error}</div>}
+            {/*<button onClick={addItemHandler}>+</button>*/}
+            {/*<Button onClick={addItemHandler} variant={"contained"} color={"primary"}>+</Button>*/}
+            <IconButton onClick={addItemHandler}  color={"primary"}>
+                <AddBox />
+            </IconButton>
+            {/*{error && <div className={'error-message'}>{error}</div>}*/}
         </div>
     );
 }
