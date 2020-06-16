@@ -8,7 +8,7 @@ import {Menu} from '@material-ui/icons';
 
 export type FilterValueType = "all" | "active" | "completed";
 
-type TodoList = {
+export type TodoList = {
     id: string;
     title: string;
     filter: FilterValueType;
@@ -52,14 +52,7 @@ function App() {
             setTasks({...tasks});
         }
     }
-    // Изменение тайтла todoList
-    const changeTitleTodoList = (todoListId: string, title: string) => {
-        const todoList = todoLists.find(tl => tl.id === todoListId);
-        if (todoList) {
-            todoList.title = title;
-        }
-        setTodoLists([...todoLists]);
-    }
+
 
     // Изменение тайтла таски
     const changeTitle = (id: string, todoListId: string, title: string) => {
@@ -73,13 +66,7 @@ function App() {
         }
     }
 
-    const changeFilter = (value: FilterValueType, todoListId: string) => {
-        let todoList = todoLists.find(elem => elem.id === todoListId);
-        if (todoList) {
-            todoList.filter = value;
-        }
-        setTodoLists([...todoLists]);
-    }
+
 
     // Удаление тасок
     const removeTask = (id: string, todoListId: string) => {
@@ -96,6 +83,21 @@ function App() {
         setTasks({...tasks});
     }
 
+    const changeFilter = (value: FilterValueType, todoListId: string) => {
+        let todoList = todoLists.find(elem => elem.id === todoListId);
+        if (todoList) {
+            todoList.filter = value;
+        }
+        setTodoLists([...todoLists]);
+    }
+    // Изменение тайтла todoList
+    const changeTitleTodoList = (todoListId: string, title: string) => {
+        const todoList = todoLists.find(tl => tl.id === todoListId);
+        if (todoList) {
+            todoList.title = title;
+        }
+        setTodoLists([...todoLists]);
+    }
     // Удаление таски-листа
     const removeTodoList = (todoListId: string) => {
         let deleteTodoList = todoLists.filter(elem => elem.id !== todoListId);
@@ -103,7 +105,6 @@ function App() {
         delete tasks[todoListId];
         setTasks({...tasks});
     }
-
     // Добавление таски
     const addTodoList = (title: string) => {
         let todoList: TodoList = {
