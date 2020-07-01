@@ -32,11 +32,12 @@ export type ActionType =
     | ChangeTodolistTitleActionType
     | ChangeTodolistFilterActionType;
 
+const initialState:Array<TodoList> = [];
 // меня вызовут и дадут мне стейт (почти всегда объект)
 // и инструкцию (action, тоже объект)
 // согласно прописаному type в этом action (инструкции) я поменяю state
 
-export const todolistsReducer = (state: Array<TodoList>, action: ActionType) => {
+export const todolistsReducer = (state: Array<TodoList> = initialState, action: ActionType):Array<TodoList> => {
     switch (action.type) {
         case 'REMOVE-TODOLIST': {
             return state.filter(elem => elem.id !== action.id);

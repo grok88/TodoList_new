@@ -1,11 +1,10 @@
-
 import React, {ChangeEvent} from "react";
 import {FilterValueType} from "./App";
 import {AddItemForm} from "./AddItemForm";
 import EditableSpan from "./EditableSpan";
-import {Button, IconButton, } from "@material-ui/core";
+import {Button, IconButton,} from "@material-ui/core";
 import {Delete} from "@material-ui/icons";
-import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 export type TaskType = {
@@ -42,9 +41,9 @@ export const TodoList = (props: PropsType) => {
         changeTitleTodoList(id, title);
     }
 
-    const addTaskwrap  = (title:string) => {
-        addTask(title, id);
-    }
+    // const addTaskwrap  = (title:string) => {
+    //     addTask(title, id);
+    // }
 
     return (
         <div>
