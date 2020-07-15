@@ -48,7 +48,7 @@ export type ActionType =
 
 const initialState: TaskStateType = {};
 
-export const tasksReducer = (state: TaskStateType = initialState, action: ActionType):TaskStateType => {
+export const tasksReducer = (state: TaskStateType = initialState, action: ActionType): TaskStateType => {
     let stateCopy;
     switch (action.type) {
         case 'REMOVE-TASK':
@@ -75,11 +75,6 @@ export const tasksReducer = (state: TaskStateType = initialState, action: Action
             stateCopy = {
                 ...state,
             };
-
-            let task = stateCopy[action.todoListId].find(t => t.id === action.taskId);
-            if (task) {
-                task.isDone = action.isDone;
-            }
             stateCopy[action.todoListId] = stateCopy[action.todoListId].map(t => {
                 if (t.id !== action.taskId) {
                     return t;
@@ -94,10 +89,6 @@ export const tasksReducer = (state: TaskStateType = initialState, action: Action
                 ...state,
             };
 
-            let task = stateCopy[action.todoListId].find(t => t.id === action.taskId);
-            if (task) {
-                task.title = action.title;
-            }
             stateCopy[action.todoListId] = stateCopy[action.todoListId].map(t => {
                 if (t.id !== action.taskId) {
                     return t;

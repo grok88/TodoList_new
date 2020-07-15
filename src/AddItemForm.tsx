@@ -7,13 +7,16 @@ type AddItemFormType = {
     addItem: (title: string) => void,
 }
 
-export const AddItemForm = (props: AddItemFormType) => {
+export const AddItemForm = React.memo((props: AddItemFormType) => {
+    console.log('AddItemForm -3');
     let [valueTask, setValueTask] = useState<string>('');
     let [error, setError] = useState<string | null>(null);
 
 
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setError(null);
+        if (error !== null) {
+            setError(null);
+        }
         setValueTask(e.currentTarget.value)
     }
 
@@ -42,7 +45,7 @@ export const AddItemForm = (props: AddItemFormType) => {
 
     return (
         <div>
-          {/*  <input
+            {/*  <input
 
                 value={valueTask}
                    onChange={onChangeHandler}
@@ -57,14 +60,14 @@ export const AddItemForm = (props: AddItemFormType) => {
                 value={valueTask}
                 onChange={onChangeHandler}
                 onKeyPress={onKeyPressHandler}
-               // className={error ? 'error' : ''}
+                // className={error ? 'error' : ''}
             />
             {/*<button onClick={addItemHandler}>+</button>*/}
             {/*<Button onClick={addItemHandler} variant={"contained"} color={"primary"}>+</Button>*/}
-            <IconButton onClick={addItemHandler}  color={"primary"}>
-                <AddBox />
+            <IconButton onClick={addItemHandler} color={"primary"}>
+                <AddBox/>
             </IconButton>
             {/*{error && <div className={'error-message'}>{error}</div>}*/}
         </div>
     );
-}
+});
