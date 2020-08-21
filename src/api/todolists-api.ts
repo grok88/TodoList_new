@@ -7,19 +7,6 @@ export type TodolistType = {
     title: string;
 }
 
-// type CreateTodolistRespType = {
-//     resultCode: number;
-//     messages: Array<string>;
-//     data: {
-//         item: TodolistType
-//     }
-// }
-// type CommonRespType1 = {
-//     resultCode: number;
-//     messages: Array<string>;
-//     data: {}
-// }
-
 type CommonRespType<T = {}> = {
     data: T
     resultCode: number;
@@ -27,25 +14,6 @@ type CommonRespType<T = {}> = {
 
 }
 
-type GetTasksRespType = {
-    error: null | string;
-    totalCount: number;
-    items: TaskType[]
-}
-
-type TaskType = {
-    description: string
-    title: string
-    completed: boolean
-    status: number
-    priority: number
-    startDate: string
-    deadline: string
-    id: string
-    todoListId: string
-    order: number
-    addedDate: string
-}
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
     withCredentials: true,
@@ -69,11 +37,3 @@ export const todolistsApi = {
     }
 }
 
-export const tasksApi = {
-    getTasks(todolistId: string) {
-        return instance.get<GetTasksRespType>(`todo-lists/${todolistId}/tasks`)
-    },
-    createTask(todolistId:string, title:string){
-        return instance.post(`todo-lists/${todolistId}/tasks`, {title})
-    }
-}
