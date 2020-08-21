@@ -59,8 +59,8 @@ export type UpdateTaskPayloadType = {
     completed: boolean;
     status: number;
     priority: number;
-    startDate: string | null;
-    deadline: string | null;
+    startDate: string;
+    deadline: string ;
 }
 
 export const tasksApi = {
