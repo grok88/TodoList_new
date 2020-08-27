@@ -1,20 +1,17 @@
 import React, {useState} from 'react';
 import './App.css';
-import {TaskType, TodoList} from "./TodoList";
+import {TodoList} from "./TodoList";
 import {v1} from 'uuid'
 import {AddItemForm} from "./AddItemForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from '@material-ui/icons';
+import {TaskPriorities, TaskStatuses, TaskType} from "./api/tasks-api";
+import {TodolistDomainType} from "./state/todolists-reducer";
 
 export type FilterValueType = "all" | "active" | "completed";
 
-export type TodoList = {
-    id: string;
-    title: string;
-    filter: FilterValueType;
-}
 
- export type TaskStateType = {
+export type TaskStateType = {
     [key: string]: Array<TaskType>;
 }
 
@@ -22,33 +19,110 @@ function App() {
     let todoListId1 = v1();
     let todoListId2 = v1();
 
-    let [todoLists, setTodoLists] = useState<Array<TodoList>>([
-        {id: todoListId1, title: 'What to learn', filter: 'all'},
-        {id: todoListId2, title: 'What to buy', filter: 'all'},
+    let [todoLists, setTodoLists] = useState<Array<TodolistDomainType>>([
+        {id: todoListId1, title: 'What to learn', filter: 'all', order: 0, addedDate: ''},
+        {id: todoListId2, title: 'What to buy', filter: 'all', order: 0, addedDate: ''},
     ]);
 
     let [tasks, setTasks] = useState<TaskStateType>({
         [todoListId1]: [
-            {id: v1(), title: "CSS", isDone: true},
-            {id: v1(), title: "JS", isDone: true},
-            {id: v1(), title: "REACT", isDone: false},
-            {id: v1(), title: "Rest Api", isDone: false},
+            {
+                id: v1(),
+                title: "CSS",
+                status: TaskStatuses.Completed,
+                todoListId: todoListId1,
+                priority: TaskPriorities.low,
+                addedDate: '',
+                deadline: '',
+                description: '',
+                order: 0,
+                startDate: ''
+            },
+            {
+                id: v1(),
+                title: "JS",
+                status: TaskStatuses.Completed,
+                todoListId: todoListId1,
+                priority: TaskPriorities.low,
+                addedDate: '',
+                deadline: '',
+                description: '',
+                order: 0,
+                startDate: ''
+            },
+            {
+                id: v1(),
+                title: "REACT",
+                status: TaskStatuses.New,
+                todoListId: todoListId1,
+                priority: TaskPriorities.low,
+                addedDate: '',
+                deadline: '',
+                description: '',
+                order: 0,
+                startDate: ''
+            },
+            {
+                id: v1(),
+                title: "Rest Api",
+                status: TaskStatuses.New,
+                todoListId: todoListId1,
+                priority: TaskPriorities.low,
+                addedDate: '',
+                deadline: '',
+                description: '',
+                order: 0,
+                startDate: ''
+            },
         ],
         [todoListId2]: [
-            {id: v1(), title: "Milk", isDone: true},
-            {id: v1(), title: "apple", isDone: true},
-            {id: v1(), title: "Beer", isDone: false},
+            {
+                id: v1(),
+                title: "Milk",
+                status: TaskStatuses.Completed,
+                todoListId: todoListId1,
+                priority: TaskPriorities.low,
+                addedDate: '',
+                deadline: '',
+                description: '',
+                order: 0,
+                startDate: ''
+            },
+            {
+                id: v1(),
+                title: "apple",
+                status: TaskStatuses.Completed,
+                todoListId: todoListId1,
+                priority: TaskPriorities.low,
+                addedDate: '',
+                deadline: '',
+                description: '',
+                order: 0,
+                startDate: ''
+            },
+            {
+                id: v1(),
+                title: "Beer",
+                status: TaskStatuses.New,
+                todoListId: todoListId1,
+                priority: TaskPriorities.low,
+                addedDate: '',
+                deadline: '',
+                description: '',
+                order: 0,
+                startDate: ''
+            },
 
         ],
     });
 
 
     // изменение чекбокса таски
-    const changeStatus = (id: string, isDone: boolean, todoListId: string) => {
+    const changeStatus = (id: string, status: TaskStatuses, todoListId: string) => {
         let todoTasks = tasks[todoListId];
         let task = todoTasks.find(elem => elem.id === id);
         if (task) {
-            task.isDone = isDone;
+            task.status = status;
             setTasks({...tasks});
         }
     }
@@ -67,7 +141,6 @@ function App() {
     }
 
 
-
     // Удаление тасок
     const removeTask = (id: string, todoListId: string) => {
         let todoList = tasks[todoListId];
@@ -77,7 +150,18 @@ function App() {
 
     // Добавление таски
     const addTask = (title: string, todoListId: string) => {
-        let task = {id: v1(), title, isDone: false};
+        let task = {
+            id: v1(),
+            title,
+            status: TaskStatuses.Completed,
+            todoListId: todoListId,
+            priority: TaskPriorities.low,
+            addedDate: '',
+            deadline: '',
+            description: '',
+            order: 0,
+            startDate: ''
+        };
         let todoList = tasks[todoListId];
         tasks[todoListId] = [task, ...todoList];
         setTasks({...tasks});
@@ -107,10 +191,12 @@ function App() {
     }
     // Добавление таски
     const addTodoList = (title: string) => {
-        let todoList: TodoList = {
+        let todoList: TodolistDomainType = {
             id: v1(),
             title,
-            filter: 'all'
+            filter: 'all',
+            addedDate: '',
+            order: 0
         }
         setTodoLists([todoList, ...todoLists]);
         setTasks({
@@ -121,7 +207,7 @@ function App() {
 
     return (
         <div className="App">
-            <AppBar position="static" >
+            <AppBar position="static">
                 <Toolbar>
                     <IconButton edge="start" color="inherit" aria-label="menu">
                         <Menu/>
@@ -133,7 +219,7 @@ function App() {
                 </Toolbar>
             </AppBar>
             <Container fixed>
-                <Grid container style={ {padding:"10px"}}>
+                <Grid container style={{padding: "10px"}}>
                     <AddItemForm addItem={addTodoList}/>
                 </Grid>
                 <Grid container spacing={3}>
@@ -142,15 +228,15 @@ function App() {
 
                             let taskForTodoList = tasks[tl.id];
                             if (tl.filter === 'active') {
-                                taskForTodoList = taskForTodoList.filter((task) => task.isDone === false);
+                                taskForTodoList = taskForTodoList.filter((task) => task.status === TaskStatuses.New);
                             }
                             if (tl.filter === 'completed') {
-                                taskForTodoList = taskForTodoList.filter((task) => task.isDone === true);
+                                taskForTodoList = taskForTodoList.filter((task) => task.status === TaskStatuses.Completed);
                             }
 
                             return (
                                 <Grid item key={tl.id}>
-                                    <Paper style={ {padding:"10px"}} elevation={3}>
+                                    <Paper style={{padding: "10px"}} elevation={3}>
                                         <TodoList
                                             title={tl.title}
                                             id={tl.id}

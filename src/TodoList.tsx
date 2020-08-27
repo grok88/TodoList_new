@@ -5,13 +5,8 @@ import EditableSpan from "./EditableSpan";
 import {Button, IconButton,} from "@material-ui/core";
 import {Delete} from "@material-ui/icons";
 import {Task} from "./Task";
+import {TaskStatuses, TaskType} from "./api/tasks-api";
 
-
-export type TaskType = {
-    id: string,
-    title: string,
-    isDone: boolean
-}
 
 type PropsType = {
     id: string,
@@ -21,7 +16,7 @@ type PropsType = {
     removeTask: (id: string, todoListId: string) => void,
     changeFilter: (value: FilterValueType, todoListId: string) => void,
     addTask: (title: string, id: string) => void,
-    changeStatus: (id: string, isDone: boolean, todoListId: string) => void,
+    changeStatus: (id: string, status: TaskStatuses, todoListId: string) => void,
     removeTodoList: (todoListId: string) => void,
     changeTitle: (id: string, todoListId: string, title: string) => void,
     changeTitleTodoList: (todoListId: string, title: string) => void
@@ -52,11 +47,11 @@ export const TodoList = React.memo((props: PropsType) => {
     let taskForTodoList = props.tasks;
 
     if (filter === 'active') {
-        taskForTodoList = props.tasks.filter((task) => task.isDone === false);
+        taskForTodoList = props.tasks.filter((task) => task.status === TaskStatuses.New);
 
     }
     if (filter === 'completed') {
-        taskForTodoList = props.tasks.filter((task) => task.isDone === true);
+        taskForTodoList = props.tasks.filter((task) => task.status === TaskStatuses.Completed);
     }
 
     return (

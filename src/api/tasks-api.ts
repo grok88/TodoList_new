@@ -8,18 +8,33 @@ const instance = axios.create({
     }
 });
 
-type TaskType = {
-    description: string
-    title: string
-    completed: boolean
-    status: number
-    priority: number
-    startDate: string
-    deadline: string
-    id: string
-    todoListId: string
-    order: number
-    addedDate: string
+export enum TaskStatuses {
+    New = 0,// if Isdone = false
+    InProgress = 1,
+    Completed = 2,// if isDone =true
+    Draft = 3
+}
+
+export enum TaskPriorities {
+    low = 0,
+    Middle = 1,
+    Hi = 2,
+    Urgently = 3,
+    Later = 4
+}
+
+export type TaskType = {
+    description: string;
+    title: string;
+    // completed: boolean;
+    status: TaskStatuses;
+    priority: TaskPriorities;
+    startDate: string;
+    deadline: string;
+    id: string;
+    todoListId: string;
+    order: number;
+    addedDate: string;
 }
 
 type GetTasksRespType = {
@@ -27,18 +42,7 @@ type GetTasksRespType = {
     totalCount: number;
     items: TaskType[];
 }
-// type CreateTaskRespType = {
-//     messages: Array<string>;
-//     resultCode: number;
-//     data: {
-//         item: TaskType;
-//     }
-// }
-// type DeleteTaskRespType = {
-//     messages: Array<string>;
-//     resultCode: number;
-//     data: {};
-// }
+
 type UpdateTaskRespType = {
     messages: Array<string>;
     resultCode: number;
@@ -60,7 +64,7 @@ export type UpdateTaskPayloadType = {
     status: number;
     priority: number;
     startDate: string;
-    deadline: string ;
+    deadline: string;
 }
 
 export const tasksApi = {
