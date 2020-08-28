@@ -60,7 +60,7 @@ type CommonTaskRespType<T = {}> = {
 export type UpdateTaskPayloadType = {
     title: string;
     description: string;
-    completed: boolean;
+    // completed: boolean;
     status: number;
     priority: number;
     startDate: string;

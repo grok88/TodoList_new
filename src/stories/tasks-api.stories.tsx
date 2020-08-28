@@ -88,7 +88,6 @@ export const updateTask = () => {
         const taskId = '58492642-f375-47cc-a7ff-448923eb937e';
         const payload: UpdateTaskPayloadType = {
             title: 'E-HO-HO',
-            completed: true,
             deadline: '',
             description: 'This task is little',
             priority: 1,
