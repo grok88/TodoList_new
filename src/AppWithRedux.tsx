@@ -5,24 +5,17 @@ import {AddItemForm} from "./AddItemForm";
 import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from "@material-ui/core";
 import {Menu} from '@material-ui/icons';
 import {
-    addTodolistAC,
+    addTodolistTC,
     changeTodolistFilterAC,
-    changeTodolistTitleAC,
-    removeTodolistAC, TodolistDomainType, SetTodolistsAC, SetTodolistsThunk
+    changeTodolistTitleTC,
+    removeTodolistTC,
+    SetTodolistsThunk,
+    TodolistDomainType
 } from "./state/todolists-reducer";
-import {
-    addTaskAC,
-    addTaskTC,
-    changeTaskStatusAC,
-    changeTitleStatusAC,
-    removeTaskAC,
-    removeTaskTC,
-    updateTaskStatusTC
-} from "./state/tasks-reducer";
+import {addTaskTC, changeTitleStatusAC, removeTaskTC, updateTaskTC} from "./state/tasks-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./state/store";
 import {TaskStatuses, TaskType} from "./api/tasks-api";
-import {todolistsApi} from "./api/todolists-api";
 
 export type FilterValueType = "all" | "active" | "completed";
 
@@ -45,7 +38,7 @@ function AppWithRedux() {
 
     // изменение чекбокса таски
     const changeStatus = useCallback((id: string, status: TaskStatuses, todoListId: string) => {
-        dispatch(updateTaskStatusTC(id, todoListId, status));
+        dispatch(updateTaskTC(id, todoListId, {status}));
         // const action = changeTaskStatusAC(id, status, todoListId);
         // dispatch(action);
     }, [dispatch]);
@@ -53,14 +46,13 @@ function AppWithRedux() {
 
     // Изменение тайтла таски
     const changeTitle = useCallback((id: string, todoListId: string, title: string) => {
-        const action = changeTitleStatusAC(id, title, todoListId);
-        dispatch(action);
+        const thunk = updateTaskTC(id, todoListId, {title});
+        dispatch(thunk);
     }, [dispatch]);
 
 
     // Удаление тасок
     const removeTask = useCallback((id: string, todoListId: string) => {
-        debugger
         const action = removeTaskTC(id, todoListId);
         dispatch(action);
     }, [dispatch]);
@@ -72,24 +64,28 @@ function AppWithRedux() {
         // dispatch(action);
     }, [dispatch]);
 
+// изменение фильтра todoList
     const changeFilter = useCallback((value: FilterValueType, todoListId: string) => {
         const action = changeTodolistFilterAC(todoListId, value);
         dispatch(action);
     }, [dispatch]);
+
     // Изменение тайтла todoList
     const changeTitleTodoList = useCallback((todoListId: string, title: string) => {
-        const action = changeTodolistTitleAC(todoListId, title);
+        const action = changeTodolistTitleTC(todoListId, title);
         dispatch(action);
     }, [dispatch]);
+
     // Удаление таски-листа
     const removeTodoList = useCallback((todoListId: string) => {
-        const action = removeTodolistAC(todoListId);
-        dispatch(action);
+        dispatch(removeTodolistTC(todoListId));
+        // const action = removeTodolistAC(todoListId);
+        // dispatch(action);
     }, [dispatch]);
-    // Добавление таски
+
+    // Добавление todoList
     const addTodoList = useCallback((title: string) => {
-        const action = addTodolistAC(title);
-        dispatch(action);
+        dispatch(addTodolistTC(title));
     }, [dispatch]);
 
     return (

@@ -12,7 +12,7 @@ import {
     removeTodolistAC,
     todolistsReducer
 } from "./state/todolists-reducer";
-import {addTaskAC, changeTaskStatusAC, changeTitleStatusAC, removeTaskAC, tasksReducer} from "./state/tasks-reducer";
+import {addTaskAC, removeTaskAC, tasksReducer, updateTaskAC} from "./state/tasks-reducer";
 import {TaskPriorities, TaskStatuses} from "./api/tasks-api";
 
 export type FilterValueType = "all" | "active" | "completed";
@@ -109,7 +109,7 @@ function AppWithReducers() {
 
     // изменение чекбокса таски
     const changeStatus = (id: string, status: TaskStatuses, todoListId: string) => {
-        const action = changeTaskStatusAC(id, status, todoListId);
+        const action = updateTaskAC(id, {status}, todoListId);
         dispatchToTasks(action);
         // let todoTasks = tasks[todoListId];
         // let task = todoTasks.find(elem => elem.id === id);
@@ -122,7 +122,7 @@ function AppWithReducers() {
 
     // Изменение тайтла таски
     const changeTitle = (id: string, todoListId: string, title: string) => {
-        const action = changeTitleStatusAC(id, title, todoListId);
+        const action = updateTaskAC(id, {title}, todoListId);
         dispatchToTasks(action);
         // let todoTasks = tasks[todoListId];
         // let task = todoTasks.find(elem => elem.id === id);
@@ -200,7 +200,12 @@ function AppWithReducers() {
     }
     // Добавление таски
     const addTodoList = (title: string) => {
-        const action = addTodolistAC(title);
+        const action = addTodolistAC({
+            title,
+            id: v1(),
+            order: 0,
+            addedDate: ''
+        });
         dispatchToTodoLists(action);
         dispatchToTasks(action)
 

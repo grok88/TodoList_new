@@ -13,11 +13,8 @@ export type RemoveTodolistActionType = {
     type: "REMOVE-TODOLIST",
     id: string
 }
-export type AddTodolistActionType = {
-    type: "ADD-TODOLIST",
-    title: string,
-    todoListId: string
-}
+export type AddTodolistActionType = ReturnType<typeof addTodolistAC>;
+
 export type ChangeTodolistTitleActionType = {
     type: "CHANGE-TODOLIST-TITLE",
     title: string
@@ -59,13 +56,10 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
         }
         case 'ADD-TODOLIST': {
             let todoList: TodolistDomainType = {
-                id: action.todoListId,
-                title: action.title,
-                filter: 'all',
-                addedDate: '',
-                order: 0
-            }
-            return [...state, todoList];
+                ...action.todoList,
+                filter: 'all'
+            };
+            return [todoList, ...state,];
         }
         case 'CHANGE-TODOLIST-TITLE' : {
             const todoList = state.find(tl => tl.id === action.id);
@@ -101,8 +95,8 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
 export const removeTodolistAC = (todolistId: string): RemoveTodolistActionType => {
     return {type: 'REMOVE-TODOLIST', id: todolistId}
 }
-export const addTodolistAC = (title: string): AddTodolistActionType => {
-    return {type: 'ADD-TODOLIST', title: title, todoListId: v1()}
+export const addTodolistAC = (todoList: TodolistType) => {
+    return {type: 'ADD-TODOLIST', todoList} as const;
 }
 export const changeTodolistTitleAC = (id: string, title: string): ChangeTodolistTitleActionType => {
     return {type: 'CHANGE-TODOLIST-TITLE', title: title, id}
@@ -118,9 +112,35 @@ export const SetTodolistsAC = (todolists: Array<TodolistType>): SetTodolistsACTy
 }
 
 //THUNK
+// Set todoLists by default in useEffect
 export const SetTodolistsThunk = (dispatch: Dispatch) => {
     todolistsApi.getTodolists()
         .then(res => {
             dispatch(SetTodolistsAC(res.data))
         })
+}
+
+// Delete todoList
+export const removeTodolistTC = (todolistId: string) => (dispatch: Dispatch) => {
+    todolistsApi.deleteTodolist(todolistId)
+        .then(res => {
+            if (res.data.resultCode === 0) {
+                dispatch(removeTodolistAC(todolistId));
+            }
+        });
+}
+//add Todolist
+export const addTodolistTC = (title: string) => (dispatch: Dispatch) => {
+    todolistsApi.createTodolist(title)
+        .then(res => {
+            debugger;
+            dispatch(addTodolistAC(res.data.data.item));
+        });
+}
+export const changeTodolistTitleTC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
+    todolistsApi.updateTodolistTitle(todolistId, title)
+        .then(res => {
+            // debugger;
+            dispatch(changeTodolistTitleAC(todolistId, title));
+        });
 }
