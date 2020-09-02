@@ -1,12 +1,13 @@
 import React from 'react';
 import {action} from '@storybook/addon-actions';
 import {Task} from './Task';
-import {TaskPriorities, TaskStatuses} from "./api/tasks-api";
+import {TaskPriorities, TaskStatuses} from "../../../../api/tasks-api";
 
 export default {
     title: 'Task',
     component: Task,
 };
+
 const removeTask = action('Remove button inside Task clicked');
 const changeTitle = action('Title changed inside component')
 const changeStatus = action('Status changed inside component')
