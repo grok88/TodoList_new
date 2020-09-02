@@ -36,7 +36,7 @@ export const TodolistsList: React.FC = () => {
         // dispatch(action);
     }, [dispatch]);
 
-
+q
     // Изменение тайтла таски
     const changeTitle = useCallback((id: string, todoListId: string, title: string) => {
         const thunk = updateTaskTC(id, todoListId, {title});
