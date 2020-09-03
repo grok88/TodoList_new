@@ -8,5 +8,5 @@ export default {
 };
 
 export const AddItemFormBaseExample = (props:any) => {
-    return <AddItemForm addItem={action('AddItemForm clicked')}/>
+    return <AddItemForm addItem={action('AddItemForm clicked')} disabled={false}/>
 }

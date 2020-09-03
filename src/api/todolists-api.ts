@@ -3,11 +3,12 @@ import axios from 'axios'
 export type TodolistType = {
     id: string;
     addedDate: string;
+
     order: number;
     title: string;
 }
 
-type CommonRespType<T = {}> = {
+ export type CommonRespType<T = {}> = {
     data: T
     resultCode: number;
     messages: Array<string>;

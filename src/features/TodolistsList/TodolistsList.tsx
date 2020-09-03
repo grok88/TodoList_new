@@ -36,7 +36,7 @@ export const TodolistsList: React.FC = () => {
         // dispatch(action);
     }, [dispatch]);
 
-q
+
     // Изменение тайтла таски
     const changeTitle = useCallback((id: string, todoListId: string, title: string) => {
         const thunk = updateTaskTC(id, todoListId, {title});
@@ -94,6 +94,7 @@ q
                             <Grid item key={tl.id}>
                                 <Paper style={{padding: "10px"}} elevation={3}>
                                     <TodoList
+                                        entityStatus={tl.entityStatus}
                                         title={tl.title}
                                         id={tl.id}
                                         filter={tl.filter}

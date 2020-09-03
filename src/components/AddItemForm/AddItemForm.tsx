@@ -4,7 +4,8 @@ import {AddBox} from "@material-ui/icons";
 
 
 type AddItemFormType = {
-    addItem: (title: string) => void,
+    addItem: (title: string) => void;
+    disabled?:boolean;
 }
 
 export const AddItemForm = React.memo((props: AddItemFormType) => {
@@ -52,7 +53,7 @@ export const AddItemForm = React.memo((props: AddItemFormType) => {
                    onKeyPress={onKeyPressHandler}
                    className={error ? 'error' : ''}
             />*/}
-            <TextField
+            <TextField disabled={props.disabled}
                 variant={"outlined"}
                 label={"Title"}
                 helperText={error}
@@ -64,7 +65,7 @@ export const AddItemForm = React.memo((props: AddItemFormType) => {
             />
             {/*<button onClick={addItemHandler}>+</button>*/}
             {/*<Button onClick={addItemHandler} variant={"contained"} color={"primary"}>+</Button>*/}
-            <IconButton onClick={addItemHandler} color={"primary"}>
+            <IconButton onClick={addItemHandler} color={"primary"} disabled={props.disabled}>
                 <AddBox/>
             </IconButton>
             {/*{error && <div className={'error-message'}>{error}</div>}*/}
