@@ -10,11 +10,11 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../../state/store";
 import {TaskStatuses} from "../../api/tasks-api";
-import {addTaskTC, removeTaskTC, updateTaskTC} from "../../state/tasks-reducer";
+import {addTaskTC, removeTaskTC, TaskStateType, updateTaskTC} from "../../state/tasks-reducer";
 import {Grid, Paper} from "@material-ui/core";
 import {AddItemForm} from "../../components/AddItemForm/AddItemForm";
 import {TodoList} from "./Todolist/TodoList";
-import {FilterValueType, TaskStateType} from "../../app/AppWithRedux";
+import {FilterValueType} from "../../app/AppWithRedux";
 
 export const TodolistsList: React.FC = () => {
 

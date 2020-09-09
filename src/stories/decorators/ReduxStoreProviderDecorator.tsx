@@ -35,7 +35,8 @@ const initialGlobalState: AppRootStateType = {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(), title: "JS", status: TaskStatuses.Completed,
@@ -45,7 +46,8 @@ const initialGlobalState: AppRootStateType = {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             }
         ],
         ["todolistId2"]: [
@@ -57,7 +59,8 @@ const initialGlobalState: AppRootStateType = {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(), title: "React Book", status: TaskStatuses.Completed,
@@ -67,7 +70,8 @@ const initialGlobalState: AppRootStateType = {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             }
         ]
     },

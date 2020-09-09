@@ -39,6 +39,7 @@ function AppWithReducers() {
                 description: '',
                 order: 0,
                 startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(), title: "JS", status: TaskStatuses.Completed,
@@ -48,7 +49,8 @@ function AppWithReducers() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(), title: "REACT", status: TaskStatuses.New,
@@ -58,7 +60,8 @@ function AppWithReducers() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(), title: "Rest Api", status: TaskStatuses.New,
@@ -68,7 +71,8 @@ function AppWithReducers() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
         ],
         [todoListId2]: [
@@ -80,7 +84,8 @@ function AppWithReducers() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(), title: "apple", status: TaskStatuses.Completed,
@@ -90,7 +95,8 @@ function AppWithReducers() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(), title: "Beer", status: TaskStatuses.New,
@@ -100,7 +106,8 @@ function AppWithReducers() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
 
         ],

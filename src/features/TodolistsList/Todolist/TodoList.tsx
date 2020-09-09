@@ -7,7 +7,7 @@ import {Delete} from "@material-ui/icons";
 import {Task} from "./Task/Task";
 import {TaskStatuses, TaskType} from "../../../api/tasks-api";
 import {useDispatch} from "react-redux";
-import {setTasksThunk} from "../../../state/tasks-reducer";
+import {setTasksThunk, TaskDomainType} from "../../../state/tasks-reducer";
 import {RequestStatusType} from "../../../state/app-reducer";
 
 
@@ -16,7 +16,7 @@ type PropsType = {
     entityStatus: RequestStatusType;
     filter: FilterValueType,
     title: string,
-    tasks: Array<TaskType>,
+    tasks: Array<TaskDomainType>,
     removeTask: (id: string, todoListId: string) => void,
     changeFilter: (value: FilterValueType, todoListId: string) => void,
     addTask: (title: string, id: string) => void,
@@ -67,7 +67,7 @@ export const TodoList = React.memo((props: PropsType) => {
     return (
         <div>
             <h3>
-                <EditableSpan value={title} onChange={onChangeTitleTodoList}/>
+                <EditableSpan value={title} onChange={onChangeTitleTodoList} disabled={props.entityStatus === 'loading'}/>
                 {/*<button onClick={onDeleteTodoList}>x</button>*/}
                 <IconButton onClick={onDeleteTodoList} disabled={props.entityStatus === 'loading'}>
                     <Delete/>

@@ -7,13 +7,11 @@ import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography}
 import {Menu} from '@material-ui/icons';
 import {TaskPriorities, TaskStatuses, TaskType} from "../api/tasks-api";
 import {TodolistDomainType} from "../state/todolists-reducer";
+import {TaskStateType, TaskDomainType} from "../state/tasks-reducer";
 
 export type FilterValueType = "all" | "active" | "completed";
 
 
-export type TaskStateType = {
-    [key: string]: Array<TaskType>;
-}
 
 function App() {
     let todoListId1 = v1();
@@ -36,7 +34,8 @@ function App() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(),
@@ -48,7 +47,8 @@ function App() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(),
@@ -60,7 +60,8 @@ function App() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(),
@@ -72,7 +73,8 @@ function App() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
         ],
         [todoListId2]: [
@@ -86,7 +88,8 @@ function App() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(),
@@ -98,7 +101,8 @@ function App() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
             {
                 id: v1(),
@@ -110,9 +114,9 @@ function App() {
                 deadline: '',
                 description: '',
                 order: 0,
-                startDate: ''
+                startDate: '',
+                entityStatus:'idle'
             },
-
         ],
     });
 
@@ -150,7 +154,7 @@ function App() {
 
     // Добавление таски
     const addTask = (title: string, todoListId: string) => {
-        let task = {
+        let task:TaskDomainType = {
             id: v1(),
             title,
             status: TaskStatuses.Completed,
@@ -160,7 +164,8 @@ function App() {
             deadline: '',
             description: '',
             order: 0,
-            startDate: ''
+            startDate: '',
+            entityStatus:'idle'
         };
         let todoList = tasks[todoListId];
         tasks[todoListId] = [task, ...todoList];

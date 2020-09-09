@@ -1,16 +1,16 @@
-import {TaskStateType} from "../trash/App";
 import {
     AddTodolistActionType,
-    RemoveTodolistActionType,
-    SetTodolistsACType,
     ChangeTodolistEntityStatusAC,
-    changeTodolistEntityStatusAC
+    changeTodolistEntityStatusAC,
+    RemoveTodolistActionType,
+    SetTodolistsACType
 } from "./todolists-reducer";
 import {tasksApi, TaskType, UpdateTaskPayloadType} from "../api/tasks-api";
 import {Dispatch} from "redux";
 import {AppRootStateType} from "./store";
-import {setAppErrorAC, setAppStatusAC, SetAppStatusACType, setAppErrorACType} from "./app-reducer";
+import {RequestStatusType, setAppErrorACType, setAppStatusAC, SetAppStatusACType} from "./app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
+
 
 const initialState: TaskStateType = {};
 
@@ -20,7 +20,7 @@ export const tasksReducer = (state: TaskStateType = initialState, action: Action
         case "SET-TASKS":
             return {
                 ...state,
-                [action.todolistId]: action.tasks
+                [action.todolistId]: action.tasks.map(task => ({...task, entityStatus: 'idle'})),
             }
         case "SET-TODOLISTS":
             const copyState = {...state};
@@ -38,10 +38,24 @@ export const tasksReducer = (state: TaskStateType = initialState, action: Action
             delete stateCopy[action.id];
             return stateCopy;
         }
+        case "CHANGE-TASK-ENTITY-STATUS":
+            return {
+                ...state,
+                [action.todoListId]: state[action.todoListId].map(t => {
+                    if (t.id !== action.taskId) {
+                        return t;
+                    } else {
+                        return {
+                            ...t,
+                            entityStatus: action.status
+                        }
+                    }
+                })
+            }
         case 'ADD-TASK':
             return {
                 ...state,
-                [action.task.todoListId]: [action.task, ...state[action.task.todoListId]]
+                [action.task.todoListId]: [{...action.task, entityStatus: 'idle'}, ...state[action.task.todoListId]]
             }
         case 'UPDATE-TASK' :
             return {
@@ -82,6 +96,14 @@ export const setTasksAC = (todolistId: string, tasks: Array<TaskType>) => ({
     tasks,
     todolistId
 } as const);
+export const changeTaskEntityStatus = (todoListId: string, taskId: string, status: RequestStatusType) => {
+    return {
+        type: 'CHANGE-TASK-ENTITY-STATUS',
+        todoListId,
+        taskId,
+        status
+    } as const
+}
 
 //enum
 export enum ResultCodeStatuses {
@@ -107,36 +129,36 @@ export const addTaskTC = (title: string, todoListId: string) => (dispatch: Dispa
                 dispatch(addTaskAC(todoListId, task));
                 dispatch(setAppStatusAC('succeeded'));
             } else {
-                if (res.data.messages.length) {
-                    dispatch(setAppErrorAC(res.data.messages[0]));
-                } else {
-                    dispatch(setAppErrorAC('Some error'));
-                }
-                dispatch(setAppStatusAC('failed'));
+                handleServerAppError(res.data, dispatch);
             }
         })
         .catch(error => {
-            dispatch(setAppErrorAC(error.message));
-            dispatch(setAppStatusAC('failed'));
-        })
+            handleServerNetworkError(error, dispatch);
+        });
 }
-export const removeTaskTC = (taskId: string, todoListId: string) => (dispatch: Dispatch<ActionType | SetAppStatusACType | ChangeTodolistEntityStatusAC>) => {
+export const removeTaskTC = (taskId: string, todoListId: string) => (dispatch: Dispatch<ActionType | SetAppStatusACType | ChangeTodolistEntityStatusAC | setAppErrorACType>) => {
     dispatch(setAppStatusAC('loading'));
     dispatch(changeTodolistEntityStatusAC(todoListId, 'loading'));
+    dispatch(changeTaskEntityStatus(todoListId, taskId, "loading"));
     tasksApi.deleteTask(todoListId, taskId)
         .then(res => {
             if (res.data.resultCode === 0) {
                 dispatch(removeTaskAC(taskId, todoListId));
                 dispatch(setAppStatusAC('succeeded'));
                 dispatch(changeTodolistEntityStatusAC(todoListId, 'succeeded'));
+                dispatch(changeTaskEntityStatus(todoListId, taskId, 'succeeded'));
             }
         })
+        .catch(error => {
+            handleServerNetworkError(error, dispatch);
+        });
 }
 export const updateTaskTC = (taskId: string, todolistId: string, domainModel: UpdateDomainTaskType) => (dispatch: Dispatch<ActionType | SetAppStatusACType | setAppErrorACType>, getState: () => AppRootStateType) => {
 
 // так как мы обязаны на сервер отправить все св-ва, которые сервер ожидает, а не только
 // те, которые мы хотим обновить, соответственно нам нужно в этом месте взять таску целиком  // чтобы у неё отобрать остальные св-ва
     dispatch(setAppStatusAC('loading'));
+    dispatch(changeTaskEntityStatus(todolistId, taskId, "loading"));
     const task = getState().tasks[todolistId].find(t => t.id === taskId)
     if (!task) {
         console.warn('Task not found in state');
@@ -157,6 +179,7 @@ export const updateTaskTC = (taskId: string, todolistId: string, domainModel: Up
             const action = updateTaskAC(taskId, domainModel, todolistId)
             dispatch(action);
             dispatch(setAppStatusAC('succeeded'));
+            dispatch(changeTaskEntityStatus(todolistId, taskId, 'succeeded'));
         } else {
             handleServerAppError(res.data, dispatch);
         }
@@ -177,6 +200,13 @@ type UpdateDomainTaskType = {
     deadline?: string;
 }
 
+export type TaskDomainType = TaskType & {
+    entityStatus: RequestStatusType;
+}
+export type TaskStateType = {
+    [key: string]: Array<TaskDomainType>;
+}
+
 // export type AddTodolistACType = {
 //     type: "CHANGE-TITLE-STATUS";
 //     taskId: string;
@@ -191,4 +221,6 @@ export type ActionType =
     | AddTodolistActionType
     | RemoveTodolistActionType
     | SetTodolistsACType
-    | ReturnType<typeof setTasksAC>;
+    | ReturnType<typeof setTasksAC>
+    | ReturnType<typeof changeTaskEntityStatus>
+

@@ -3,7 +3,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import EditableSpan from "../../../../components/EditableSpan/EditableSpan";
 import {IconButton} from "@material-ui/core";
 import {Delete} from "@material-ui/icons";
-import {TaskStatuses, TaskType} from "../../../../api/tasks-api";
+import {TaskStatuses} from "../../../../api/tasks-api";
+import {TaskDomainType} from "../../../../state/tasks-reducer";
 
 
 type TaskPropsType = {
@@ -12,7 +13,7 @@ type TaskPropsType = {
     changeTitle: (id: string, todoListId: string, title: string) => void,
     id: string,
     todoListId: string,
-    task: TaskType
+    task: TaskDomainType
 }
 export const Task = React.memo((props: TaskPropsType) => {
     const onRemoveHandler = () => props.removeTask(props.id, props.todoListId);
@@ -20,7 +21,7 @@ export const Task = React.memo((props: TaskPropsType) => {
         props.changeStatus(props.id, e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New, props.todoListId);
     }
     const onChangeTitleHandler = useCallback((title: string) => {
-        props.changeTitle(props.id, props.todoListId, title)
+        props.changeTitle(props.id, props.todoListId, title);
     }, [props.changeTitle, props.id, props.todoListId]);
     return (
         <li key={props.id} className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>
@@ -29,11 +30,12 @@ export const Task = React.memo((props: TaskPropsType) => {
                                        onChange={onChangeHandler}/>*/}
             <Checkbox color={"primary"}
                       checked={props.task.status === TaskStatuses.Completed}
-                      onChange={onChangeHandler}/>
-            <EditableSpan value={props.task.title} onChange={onChangeTitleHandler}/>
+                      onChange={onChangeHandler} disabled={props.task.entityStatus === 'loading'}/>
+            <EditableSpan value={props.task.title} onChange={onChangeTitleHandler}
+                          disabled={props.task.entityStatus === 'loading'}/>
             {/*<span>{title}</span>*/}
             {/*<button onClick={onRemoveHandler}>x</button>*/}
-            <IconButton onClick={onRemoveHandler}>
+            <IconButton onClick={onRemoveHandler} disabled={props.task.entityStatus === 'loading'}>
                 <Delete/>
             </IconButton>
         </li>

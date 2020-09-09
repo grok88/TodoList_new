@@ -2,8 +2,9 @@ import React, {useState, ChangeEvent, KeyboardEvent} from "react";
 import {TextField} from "@material-ui/core";
 
 type EditableSpanType = {
-    value: string,
-    onChange: (newValue: string) => void
+    value: string;
+    onChange: (newValue: string) => void;
+    disabled?:boolean
 }
 
 const EditableSpan = React.memo((props: EditableSpanType) => {
@@ -18,8 +19,6 @@ const EditableSpan = React.memo((props: EditableSpanType) => {
     }
     const disableEditMode = () => {
         setEditMode(false);
-        // props.onChange(title);
-        // setTitle()
     }
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -45,6 +44,7 @@ const EditableSpan = React.memo((props: EditableSpanType) => {
                 onBlur={disableEditMode}
                 onChange={onChangeHandler}
                 onKeyPress={onKeyPressHandler}
+                disabled={props.disabled}
             />
             :
             <span onDoubleClick={activateEditMode}>{props.value}</span>

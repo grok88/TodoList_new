@@ -27,7 +27,8 @@ export const TaskBaseExample = () => {
                       deadline: '',
                       description: '',
                       order: 0,
-                      startDate: ''
+                      startDate: '',
+                      entityStatus:'idle'
                   }}/>
             <Task removeTask={removeTask} changeTitle={changeTitle}
                   changeStatus={changeStatus} todoListId={'todoList2'} id={'2'}
@@ -38,7 +39,8 @@ export const TaskBaseExample = () => {
                       deadline: '',
                       description: '',
                       order: 0,
-                      startDate: ''
+                      startDate: '',
+                      entityStatus:'idle'
                   }}/>
 
         </>
