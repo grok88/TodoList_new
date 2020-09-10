@@ -70,6 +70,7 @@ export const setTodolistsAC = (todolists: Array<TodolistType>) => ({
 
 //thunks
 export const setTodolistsThunk = (dispatch: Dispatch<ActionType | SetAppStatusACType | setAppErrorACType>) => {
+
     dispatch(setAppStatusAC('loading'));
     todolistsApi.getTodolists()
         .then(res => {

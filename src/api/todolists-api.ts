@@ -22,6 +22,7 @@ const instance = axios.create({
     }
 });
 
+
 export const todolistsApi = {
     getTodolists() {
         return instance.get<Array<TodolistType>>('todo-lists');
@@ -34,6 +35,38 @@ export const todolistsApi = {
     },
     updateTodolistTitle(todolistId: string, title: string) {
         return instance.put<CommonRespType>(`todo-lists/${todolistId}`, {title})
+    }
+}
+
+export type AuthMeRespType = {
+    id:number;
+    email:string;
+    login:string;
+}
+
+export type LoginParamsType = {
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha?: string
+}
+export type LoginErrorType = {
+    email?: string
+    password?: string
+    rememberMe?: boolean
+    captcha?: string
+}
+
+
+export const authAPI = {
+    me() {
+        return instance.get<CommonRespType<AuthMeRespType>>('auth/me');
+    },
+    login(data:LoginParamsType){
+        return instance.post<CommonRespType<{userId?:number}>>('/auth/login', data);
+    },
+    logout() {
+        return instance.delete<CommonRespType>('auth/login');
     }
 }
 
