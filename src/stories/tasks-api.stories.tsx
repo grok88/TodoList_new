@@ -73,7 +73,6 @@ export const DeleteTask = () => {
         const taskId = 'a06282bb-67d8-445e-a974-fb214f84d8f6';
         tasksApi.deleteTask(todolistId, taskId)
             .then(res => {
-                debugger
                 setState(res.data);
             })
 
