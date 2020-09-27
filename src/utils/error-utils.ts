@@ -1,20 +1,19 @@
-import {setAppErrorAC, setAppErrorACType, setAppStatusAC, SetAppStatusACType} from "../state/app-reducer";
+import {setAppErrorAC, setAppStatusAC} from "../state/app-reducer";
 import {CommonRespType} from "../api/todolists-api";
 import {Dispatch} from "redux";
 
-export const handleServerAppError = <T>(data : CommonRespType<T>, dispatch:Dispatch<ErrorUtilsType>) => {
+export const handleServerAppError = <T>(data: CommonRespType<T>, dispatch: Dispatch) => {
     if (data.messages.length) {
-        dispatch(setAppErrorAC(data.messages[0]));
+        dispatch(setAppErrorAC({error: data.messages[0]}));
     } else {
-        dispatch(setAppErrorAC('Some error'));
+        dispatch(setAppErrorAC({error: 'Some error'}));
     }
-    dispatch(setAppStatusAC('failed'));
+    dispatch(setAppStatusAC({status: 'failed'}));
 }
 
 
-export const handleServerNetworkError = (error: {message: string}, dispatch:Dispatch< ErrorUtilsType>) => {
-    dispatch(setAppErrorAC(error.message))
-    dispatch(setAppStatusAC('failed'))
+export const handleServerNetworkError = (error: { message: string }, dispatch: Dispatch) => {
+    dispatch(setAppErrorAC({error: error.message}))
+    dispatch(setAppStatusAC({status: 'failed'}));
 }
 
-type ErrorUtilsType = SetAppStatusACType | setAppErrorACType;
