@@ -2,71 +2,55 @@ import {FilterValueType} from "../trash/App";
 import {todolistsApi, TodolistType} from "../api/todolists-api";
 import {Dispatch} from "redux";
 import {RequestStatusType, setAppStatusAC} from "./app-reducer";
-import {ResultCodeStatuses} from "./tasks-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+
+export enum ResultCodeStatuses {
+    success = 0,
+    failed = 1
+}
 
 const initialState: Array<TodolistDomainType> = [];
 
-export const todolistsReducer = (state: Array<TodolistDomainType> = initialState, action: ActionType): Array<TodolistDomainType> => {
-    switch (action.type) {
-        case 'REMOVE-TODOLIST':
-            return state.filter(elem => elem.id !== action.id);
-        case 'ADD-TODOLIST':
-            return [{...action.todoList, filter: 'all', entityStatus: 'idle'}, ...state];
-        case 'CHANGE-TODOLIST-TITLE' :
-            return state.map(el => el.id === action.id ? ({...el, title: action.title}) : el);
-        case 'CHANGE-TODOLIST-FILTER' :
-            return state.map(todoList => {
-                if (todoList.id !== action.id) {
-                    return todoList
-                } else {
-                    todoList.filter = action.filter;
-                    return {
-                        ...todoList
-                    }
-                }
-            })
-        case 'CHANGE-TODOLIST-ENTITY-STATUS' :
-            return state.map(todoList => {
-                if (todoList.id !== action.id) {
-                    return todoList
-                } else {
-                    todoList.entityStatus = action.status;
-                    return {
-                        ...todoList
-                    }
-                }
-            })
-        case "SET-TODOLISTS":
-            return action.todolists.map(tl => ({...tl, filter: 'all', entityStatus: 'idle'}))
-        default:
-            return state;
-    }
+export type TodolistDomainType = TodolistType & {
+    filter: FilterValueType;
+    entityStatus: RequestStatusType;
 }
 
-// actions
-export const removeTodolistAC = (todolistId: string) => ({type: 'REMOVE-TODOLIST', id: todolistId} as const);
-export const addTodolistAC = (todoList: TodolistType) => ({type: 'ADD-TODOLIST', todoList} as const);
-export const changeTodolistTitleAC = (id: string, title: string) => ({
-    type: 'CHANGE-TODOLIST-TITLE',
-    title,
-    id
-} as const);
-export const changeTodolistFilterAC = (id: string, filter: FilterValueType) => ({
-    type: 'CHANGE-TODOLIST-FILTER',
-    filter: filter,
-    id
-} as const);
+const slice = createSlice({
+    name: 'todolists',
+    initialState: initialState,
+    reducers: {
+        removeTodolistAC(state, action: PayloadAction<{ todolistId: string }>) {
+            let index = state.findIndex(elem => elem.id === action.payload.todolistId);
+            if (index > -1) {
+                state.splice(index, 1);
+            }
+        },
+        addTodolistAC(state, action: PayloadAction<{ todoList: TodolistType }>) {
+            state.unshift({...action.payload.todoList, filter: 'all', entityStatus: 'idle'});
+        },
+        changeTodolistTitleAC(state, action: PayloadAction<{ id: string, title: string }>) {
+            let index = state.findIndex(elem => elem.id === action.payload.id);
+            state[index].title = action.payload.title;
+        },
+        changeTodolistFilterAC(state, action: PayloadAction<{ id: string, filter: FilterValueType }>) {
+            let index = state.findIndex(elem => elem.id === action.payload.id);
+            state[index].filter = action.payload.filter;
+        },
+        changeTodolistEntityStatusAC(state, action: PayloadAction<{ id: string, status: RequestStatusType }>) {
+            let index = state.findIndex(elem => elem.id === action.payload.id);
+            state[index].entityStatus = action.payload.status;
+        },
+        setTodolistsAC(state, action: PayloadAction<{ todolists: Array<TodolistType> }>) {
+            return action.payload.todolists.map(tl => ({...tl, filter: 'all', entityStatus: 'idle'}));
+        },
+    }
+});
 
-export const changeTodolistEntityStatusAC = (id: string, status: RequestStatusType) => ({
-    type: 'CHANGE-TODOLIST-ENTITY-STATUS',
-    status,
-    id
-} as const);
-export const setTodolistsAC = (todolists: Array<TodolistType>) => ({
-    type: "SET-TODOLISTS",
-    todolists
-} as const);
+export const todolistsReducer = slice.reducer;
+
+export const {removeTodolistAC, addTodolistAC, changeTodolistTitleAC, changeTodolistFilterAC, changeTodolistEntityStatusAC, setTodolistsAC} = slice.actions;
 
 //thunks
 export const setTodolistsThunk = (dispatch: Dispatch) => {
@@ -74,7 +58,7 @@ export const setTodolistsThunk = (dispatch: Dispatch) => {
     dispatch(setAppStatusAC({status: 'loading'}));
     todolistsApi.getTodolists()
         .then(res => {
-            dispatch(setTodolistsAC(res.data));
+            dispatch(setTodolistsAC({todolists: res.data}));
             dispatch(setAppStatusAC({status: 'succeeded'}));
         })
         .catch(error => {
@@ -83,11 +67,11 @@ export const setTodolistsThunk = (dispatch: Dispatch) => {
 }
 export const removeTodolistTC = (todolistId: string) => (dispatch: Dispatch) => {
     dispatch(setAppStatusAC({status: 'loading'}));
-    dispatch(changeTodolistEntityStatusAC(todolistId, 'loading'));
+    dispatch(changeTodolistEntityStatusAC({id: todolistId, status: 'loading'}));
     todolistsApi.deleteTodolist(todolistId)
         .then(res => {
             if (res.data.resultCode === 0) {
-                dispatch(removeTodolistAC(todolistId));
+                dispatch(removeTodolistAC({todolistId}));
                 dispatch(setAppStatusAC({status: 'succeeded'}));
                 // dispatch(changeTodolistEntityStatusAC(todolistId, 'succeeded'));
             }
@@ -101,7 +85,7 @@ export const addTodolistTC = (title: string) => (dispatch: Dispatch) => {
     todolistsApi.createTodolist(title)
         .then(res => {
             if (res.data.resultCode === ResultCodeStatuses.success) {
-                dispatch(addTodolistAC(res.data.data.item));
+                dispatch(addTodolistAC({todoList: res.data.data.item}));
                 dispatch(setAppStatusAC({status: 'succeeded'}));
             } else {
                 handleServerAppError(res.data, dispatch);
@@ -115,7 +99,7 @@ export const changeTodolistTitleTC = (todolistId: string, title: string) => (dis
     dispatch(setAppStatusAC({status: 'loading'}));
     todolistsApi.updateTodolistTitle(todolistId, title)
         .then(res => {
-            dispatch(changeTodolistTitleAC(todolistId, title));
+            dispatch(changeTodolistTitleAC({id: todolistId, title}));
             dispatch(setAppStatusAC({status: 'succeeded'}));
         })
         .catch(error => {
@@ -123,20 +107,6 @@ export const changeTodolistTitleTC = (todolistId: string, title: string) => (dis
         });
 }
 
-//types
-export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>;
-export type SetTodolistsACType = ReturnType<typeof setTodolistsAC>
 export type AddTodolistActionType = ReturnType<typeof addTodolistAC>;
-export type ChangeTodolistEntityStatusAC = ReturnType<typeof changeTodolistEntityStatusAC>;
-export type TodolistDomainType = TodolistType & {
-    filter: FilterValueType;
-    entityStatus: RequestStatusType;
-}
-
-export type ActionType =
-    RemoveTodolistActionType
-    | AddTodolistActionType
-    | SetTodolistsACType
-    | ReturnType<typeof changeTodolistTitleAC>
-    | ReturnType<typeof changeTodolistFilterAC>
-    | ChangeTodolistEntityStatusAC
+export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>;
+export type SetTodolistsACType = ReturnType<typeof setTodolistsAC>;

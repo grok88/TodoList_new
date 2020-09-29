@@ -50,10 +50,6 @@ export const TodoList = React.memo((props: PropsType) => {
         changeTitleTodoList(id, title);
     }, [changeTitleTodoList, id]);
 
-    // const addTaskwrap  = (title:string) => {
-    //     addTask(title, id);
-    // }
-
     let taskForTodoList = props.tasks;
 
     if (filter === 'active') {

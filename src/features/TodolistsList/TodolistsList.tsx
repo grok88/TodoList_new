@@ -38,8 +38,6 @@ export const TodolistsList: React.FC = () => {
     // изменение чекбокса таски
     const changeStatus = useCallback((id: string, status: TaskStatuses, todoListId: string) => {
         dispatch(updateTaskTC(id, todoListId, {status}));
-        // const action = changeTaskStatusAC(id, status, todoListId);
-        // dispatch(action);
     }, [dispatch]);
 
 
@@ -65,7 +63,7 @@ export const TodolistsList: React.FC = () => {
 
 // изменение фильтра todoList
     const changeFilter = useCallback((value: FilterValueType, todoListId: string) => {
-        const action = changeTodolistFilterAC(todoListId, value);
+        const action = changeTodolistFilterAC({id:todoListId, filter:value});
         dispatch(action);
     }, [dispatch]);
 

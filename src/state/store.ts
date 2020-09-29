@@ -8,8 +8,8 @@ import {configureStore} from "@reduxjs/toolkit";
 import logger from "redux-logger";
 
 const rootReducer = combineReducers({
-    tasks: tasksReducer,
     todolists: todolistsReducer,
+    tasks: tasksReducer,
     app: appReducer,
     auth: authReducer
 });
