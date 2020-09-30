@@ -50,7 +50,6 @@ function AppWithRedux() {
     }
 
     return (
-        <BrowserRouter>
             <div className="App">
                 <ErrorSnackbar/>
                 <AppBar position="static">
@@ -70,7 +69,6 @@ function AppWithRedux() {
                     <Route exact path={'/'} render={() => <TodolistsList/>}/>
                 </Container>
             </div>
-        </BrowserRouter>
     );
 }
 

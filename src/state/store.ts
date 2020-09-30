@@ -19,13 +19,16 @@ const rootReducer = combineReducers({
 const store = configureStore({
     reducer: rootReducer,
     middleware: getDefaultMiddleware => getDefaultMiddleware()
-            .prepend(
-                // correctly typed middlewares can just be used
-                thunkMiddleware,
-            )
-})
+        .prepend(
+            // correctly typed middlewares can just be used
+            thunkMiddleware,
+        )
+});
+
+export type RootReducerType = typeof rootReducer;
+
 // @ts-ignore
 window.store = store;
 
-export type AppRootStateType = ReturnType<typeof rootReducer>
+export type AppRootStateType = ReturnType<RootReducerType>;
 export default store;

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react'
-import {todolistsApi} from "../api/todolists-api";
 import {tasksApi, UpdateTaskPayloadType} from "../api/tasks-api";
 
 export default {
@@ -81,7 +80,7 @@ export const DeleteTask = () => {
     return <div> {JSON.stringify(state)}</div>
 }
 export const updateTask = () => {
-    const [state, setState] = useState<any>(null)
+
     useEffect(() => {
         const todolistId = 'ad1470ce-8cfe-4d4c-a653-017d5ad88511';
         const taskId = '58492642-f375-47cc-a7ff-448923eb937e';
@@ -99,6 +98,6 @@ export const updateTask = () => {
             })
 
     }, [])
-
+    const [state, setState] = useState<any>(null)
     return <div> {JSON.stringify(state)}</div>
 }
