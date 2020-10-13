@@ -5,7 +5,7 @@ import EditableSpan from "../../../components/EditableSpan/EditableSpan";
 import {Button, IconButton,} from "@material-ui/core";
 import {Delete} from "@material-ui/icons";
 import {Task} from "./Task/Task";
-import {TaskStatuses, TaskType} from "../../../api/tasks-api";
+import {TaskStatuses} from "../../../api/tasks-api";
 import {useDispatch} from "react-redux";
 import {setTasksThunk, TaskDomainType} from "../../../state/tasks-reducer";
 import {RequestStatusType} from "../../../state/app-reducer";
@@ -63,7 +63,8 @@ export const TodoList = React.memo((props: PropsType) => {
     return (
         <div>
             <h3>
-                <EditableSpan value={title} onChange={onChangeTitleTodoList} disabled={props.entityStatus === 'loading'}/>
+                <EditableSpan value={title} onChange={onChangeTitleTodoList}
+                              disabled={props.entityStatus === 'loading'}/>
                 {/*<button onClick={onDeleteTodoList}>x</button>*/}
                 <IconButton onClick={onDeleteTodoList} disabled={props.entityStatus === 'loading'}>
                     <Delete/>
