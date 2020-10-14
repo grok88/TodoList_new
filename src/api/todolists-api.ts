@@ -7,11 +7,12 @@ export type TodolistType = {
     title: string;
 }
 
- export type CommonRespType<T = {}> = {
+export type FieldErrorType = { field: string, error: string };
+export type CommonRespType<T = {}> = {
     data: T
     resultCode: number;
     messages: Array<string>;
-
+    fieldsErrors?: Array<FieldErrorType>
 }
 
 const instance = axios.create({
@@ -39,9 +40,9 @@ export const todolistsApi = {
 }
 
 export type AuthMeRespType = {
-    id:number;
-    email:string;
-    login:string;
+    id: number;
+    email: string;
+    login: string;
 }
 
 export type LoginParamsType = {
@@ -62,8 +63,8 @@ export const authAPI = {
     me() {
         return instance.get<CommonRespType<AuthMeRespType>>('auth/me');
     },
-    login(data:LoginParamsType){
-        return instance.post<CommonRespType<{userId?:number}>>('/auth/login', data);
+    login(data: LoginParamsType) {
+        return instance.post<CommonRespType<{ userId?: number }>>('/auth/login', data);
     },
     logout() {
         return instance.delete<CommonRespType>('auth/login');

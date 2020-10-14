@@ -1,14 +1,20 @@
 import React from 'react'
-import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, TextField, Button, Grid} from '@material-ui/core'
-import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "../../state/store";
+import {Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField} from '@material-ui/core'
+import {useSelector} from "react-redux";
+import {AppRootStateType, useAppDispatch} from "../../state/store";
 import {Redirect} from 'react-router-dom';
-import {useFormik} from "formik";
-import { loginTC } from './auth-reducer';
+import {FormikHelpers, useFormik} from "formik";
+import {loginTC} from './auth-reducer';
 import {LoginErrorType, LoginParamsType} from "../../api/todolists-api";
 
 
-const validate = (values:LoginParamsType) => {
+type FormValuesType = {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+}
+
+const validate = (values: LoginParamsType) => {
     const errors: LoginErrorType = {};
     if (!values.email) {
         errors.email = 'Required';
@@ -27,7 +33,7 @@ const validate = (values:LoginParamsType) => {
 export const Login = () => {
 
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn);
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const formik = useFormik({
         initialValues: {
@@ -36,8 +42,17 @@ export const Login = () => {
             rememberMe: false
         },
         validate,
-        onSubmit: values => {
-           dispatch(loginTC(values))
+        onSubmit: async (values: FormValuesType, formikHelpers: FormikHelpers<FormValuesType>) => {
+            const action = await dispatch(loginTC(values));
+            // if(action.type === loginTC.rejected.type){
+            if (loginTC.rejected.match(action)) {
+                if (action.payload?.fieldsError?.length) {
+                    const error = action.payload?.fieldsError[0];
+                    formikHelpers.setFieldError(error.field, error.error);
+                }
+            }
+
+            // if (res === bad) show error
         },
     })
 
