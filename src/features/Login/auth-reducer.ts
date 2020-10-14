@@ -27,21 +27,24 @@ export const loginTC = createAsyncThunk<{ isLoginIn: boolean }, LoginParamsType,
     }
 });
 
-// export const loginTC_ = (data: LoginParamsType) => (dispatch: Dispatch) => {
-//     dispatch(setAppStatusAC({status: 'loading'}))
-//     authAPI.login(data)
-//         .then(res => {
-//             if (res.data.resultCode === 0) {
-//                 dispatch(setIsLoggedInAC({value: true}))
-//                 dispatch(setAppStatusAC({status: 'succeeded'}))
-//             } else {
-//                 handleServerAppError(res.data, dispatch)
-//             }
-//         })
-//         .catch((error) => {
-//             handleServerNetworkError(error, dispatch)
-//         })
-// }
+export const logoutTC = createAsyncThunk('auth/logout', async (data, thunkAPI) => {
+    thunkAPI.dispatch(setAppStatusAC({status: 'loading'}))
+
+    try {
+        const res = await authAPI.logout()
+        if (res.data.resultCode === 0) {
+            thunkAPI.dispatch(setAppStatusAC({status: 'succeeded'}));
+            return
+        } else {
+            handleServerAppError(res.data, thunkAPI.dispatch);
+            return thunkAPI.rejectWithValue({errors: res.data.messages, fieldsError: res.data.fieldsErrors});
+        }
+    } catch (error) {
+        handleServerNetworkError(error, thunkAPI.dispatch);
+        return thunkAPI.rejectWithValue({errors: [error.message], fieldsError: undefined});
+    }
+});
+
 
 const slice = createSlice({
     name: 'auth',
@@ -57,6 +60,12 @@ const slice = createSlice({
         builder.addCase(loginTC.fulfilled, (state, action) => {
                 // if (action.payload) {
                 state.isLoggedIn = action.payload.isLoginIn;
+                // }
+            }
+        );
+        builder.addCase(logoutTC.fulfilled, (state, action) => {
+                // if (action.payload) {
+                state.isLoggedIn = false;
                 // }
             }
         );
@@ -87,21 +96,21 @@ export const setIsLoggedInAC = slice.actions.setIsLoggedInAC;
 // }
 
 //ASYNC -AWAIT
-export const logoutTC = () => async (dispatch: Dispatch) => {
-    dispatch(setAppStatusAC({status: 'loading'}))
-
-    try {
-        const res = await authAPI.logout()
-        if (res.data.resultCode === 0) {
-            dispatch(setIsLoggedInAC({value: false}))
-            dispatch(setAppStatusAC({status: 'succeeded'}))
-        } else {
-            handleServerAppError(res.data, dispatch)
-        }
-    } catch (error) {
-        handleServerNetworkError(error, dispatch);
-    }
-
-}
-
+// export const logoutTC = () => async (dispatch: Dispatch) => {
+//     dispatch(setAppStatusAC({status: 'loading'}))
+//
+//     try {
+//         const res = await authAPI.logout()
+//         if (res.data.resultCode === 0) {
+//             dispatch(setIsLoggedInAC({value: false}))
+//             dispatch(setAppStatusAC({status: 'succeeded'}))
+//         } else {
+//             handleServerAppError(res.data, dispatch)
+//         }
+//     } catch (error) {
+//         handleServerNetworkError(error, dispatch);
+//     }
+//
+// }
+//
 

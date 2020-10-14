@@ -21,13 +21,11 @@ export const TodolistsList: React.FC = () => {
     const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn);
 
     useEffect(() => {
-        if(!isLoggedIn){
+        if (!isLoggedIn) {
             return
         }
         dispatch(setTodolistsThunk);
     }, []);
-
-    console.log('App - 1');
 
 
     let todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(state => state.todolists);
@@ -37,13 +35,13 @@ export const TodolistsList: React.FC = () => {
 
     // изменение чекбокса таски
     const changeStatus = useCallback((id: string, status: TaskStatuses, todoListId: string) => {
-        dispatch(updateTaskTC(id, todoListId, {status}));
+        dispatch(updateTaskTC({taskId: id, todoListId, model: {status}}));
     }, [dispatch]);
 
 
     // Изменение тайтла таски
     const changeTitle = useCallback((id: string, todoListId: string, title: string) => {
-        const thunk = updateTaskTC(id, todoListId, {title});
+        const thunk = updateTaskTC({taskId: id, todoListId, model: {title}});
         dispatch(thunk);
     }, [dispatch]);
 
@@ -56,14 +54,14 @@ export const TodolistsList: React.FC = () => {
 
     // Добавление таски
     const addTask = useCallback((title: string, todoListId: string) => {
-        dispatch(addTaskTC(title, todoListId))
+        dispatch(addTaskTC({title, todoListId}))
         // const action = addTaskAC(title, todoListId);
         // dispatch(action);
     }, [dispatch]);
 
 // изменение фильтра todoList
     const changeFilter = useCallback((value: FilterValueType, todoListId: string) => {
-        const action = changeTodolistFilterAC({id:todoListId, filter:value});
+        const action = changeTodolistFilterAC({id: todoListId, filter: value});
         dispatch(action);
     }, [dispatch]);
 

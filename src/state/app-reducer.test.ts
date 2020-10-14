@@ -1,4 +1,4 @@
-import {appReducer, RequestStatusType, setAppErrorAC, setAppStatusAC, setIsInitializedAC} from "./app-reducer";
+import {appReducer, RequestStatusType, setAppErrorAC, setAppStatusAC} from "./app-reducer";
 // import {TaskStateType} from '../trash/App';
 
 type StartStateType = {
@@ -34,11 +34,11 @@ test('correct error should be set ', () => {
 
     expect(endState.error).toBe('Some BIG error');
 });
-test('isInitialized should be changed', () => {
-
-    const action = setIsInitializedAC({isInitialized:true});
-
-    const endState = appReducer(startState, action)
-
-    expect(endState.isInitialized).toBe(true);
-});
+// test('isInitialized should be changed', () => {
+//
+//     const action = setIsInitializedAC({isInitialized:true});
+//
+//     const endState = appReducer(startState, action)
+//
+//     expect(endState.isInitialized).toBe(true);
+// });

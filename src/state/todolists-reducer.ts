@@ -3,7 +3,7 @@ import {todolistsApi, TodolistType} from "../api/todolists-api";
 import {Dispatch} from "redux";
 import {RequestStatusType, setAppStatusAC} from "./app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export enum ResultCodeStatuses {
     success = 0,
@@ -15,6 +15,34 @@ const initialState: Array<TodolistDomainType> = [];
 export type TodolistDomainType = TodolistType & {
     filter: FilterValueType;
     entityStatus: RequestStatusType;
+}
+
+export const setTodolistsThunk = createAsyncThunk('todolists/setTodolists', async (param, {dispatch, rejectWithValue}) => {
+    dispatch(setAppStatusAC({status: 'loading'}));
+
+    try {
+        const res = await todolistsApi.getTodolists();
+        // dispatch(setTodolistsAC({todolists: res.data}));
+        dispatch(setAppStatusAC({status: 'succeeded'}));
+        return {todolists: res.data};
+
+    } catch (error) {
+        handleServerNetworkError(error, dispatch);
+        return rejectWithValue(null);
+    }
+});
+
+export const setTodolistsThunk_ = (dispatch: Dispatch) => {
+
+    dispatch(setAppStatusAC({status: 'loading'}));
+    todolistsApi.getTodolists()
+        .then(res => {
+            dispatch(setTodolistsAC({todolists: res.data}));
+            dispatch(setAppStatusAC({status: 'succeeded'}));
+        })
+        .catch(error => {
+            handleServerNetworkError(error, dispatch);
+        });
 }
 
 const slice = createSlice({
@@ -45,6 +73,11 @@ const slice = createSlice({
         setTodolistsAC(state, action: PayloadAction<{ todolists: Array<TodolistType> }>) {
             return action.payload.todolists.map(tl => ({...tl, filter: 'all', entityStatus: 'idle'}));
         },
+    },
+    extraReducers:builder => {
+        builder.addCase(setTodolistsThunk.fulfilled, (state, action) =>{
+            return action.payload.todolists.map(tl => ({...tl, filter: 'all', entityStatus: 'idle'}));
+        })
     }
 });
 
@@ -53,18 +86,18 @@ export const todolistsReducer = slice.reducer;
 export const {removeTodolistAC, addTodolistAC, changeTodolistTitleAC, changeTodolistFilterAC, changeTodolistEntityStatusAC, setTodolistsAC} = slice.actions;
 
 //thunks
-export const setTodolistsThunk = (dispatch: Dispatch) => {
-
-    dispatch(setAppStatusAC({status: 'loading'}));
-    todolistsApi.getTodolists()
-        .then(res => {
-            dispatch(setTodolistsAC({todolists: res.data}));
-            dispatch(setAppStatusAC({status: 'succeeded'}));
-        })
-        .catch(error => {
-            handleServerNetworkError(error, dispatch);
-        });
-}
+// export const setTodolistsThunk = (dispatch: Dispatch) => {
+//
+//     dispatch(setAppStatusAC({status: 'loading'}));
+//     todolistsApi.getTodolists()
+//         .then(res => {
+//             dispatch(setTodolistsAC({todolists: res.data}));
+//             dispatch(setAppStatusAC({status: 'succeeded'}));
+//         })
+//         .catch(error => {
+//             handleServerNetworkError(error, dispatch);
+//         });
+// }
 export const removeTodolistTC = (todolistId: string) => (dispatch: Dispatch) => {
     dispatch(setAppStatusAC({status: 'loading'}));
     dispatch(changeTodolistEntityStatusAC({id: todolistId, status: 'loading'}));
