@@ -24,7 +24,7 @@ export const TodolistsList: React.FC = () => {
         if (!isLoggedIn) {
             return
         }
-        dispatch(setTodolistsThunk);
+        dispatch(setTodolistsThunk());
     }, []);
 
 
@@ -67,7 +67,7 @@ export const TodolistsList: React.FC = () => {
 
     // Изменение тайтла todoList
     const changeTitleTodoList = useCallback((todoListId: string, title: string) => {
-        const action = changeTodolistTitleTC(todoListId, title);
+        const action = changeTodolistTitleTC({id:todoListId, title});
         dispatch(action);
     }, [dispatch]);
 

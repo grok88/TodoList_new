@@ -1,12 +1,9 @@
 import {
-    addTodolistAC,
-    AddTodolistActionType,
     changeTodolistEntityStatusAC,
-    removeTodolistAC,
-    RemoveTodolistActionType,
+    removeTodolistTC,
     ResultCodeStatuses,
-    setTodolistsAC,
-    SetTodolistsACType
+    setTodolistsThunk,
+    addTodolistTC,
 } from "./todolists-reducer";
 import {tasksApi, TaskType, UpdateTaskPayloadType} from "../api/tasks-api";
 import {RequestStatusType, setAppStatusAC} from "./app-reducer";
@@ -117,24 +114,19 @@ const slice = createSlice({
                 tasks[index].entityStatus = action.payload.status;
             }
         },
-        // updateTaskAC(state, action: PayloadAction<{ taskId: string, model: UpdateDomainTaskType, todoListId: string }>) {
-        //     let tasks = state[action.payload.todoListId];
-        //     let index = tasks.findIndex(t => t.id === action.payload.taskId);
-        //     if (index > -1) {
-        //         tasks[index] = {...tasks[index], ...action.payload.model}
-        //     }
-        // },
     },
     extraReducers: (builder) => {
-        builder.addCase(addTodolistAC, (state, action) => {
+        builder.addCase(addTodolistTC.fulfilled, (state, action) => {
                 state[action.payload.todoList.id] = [];
             }
         );
-        builder.addCase(removeTodolistAC, (state, action) => {
-                delete state[action.payload.todolistId];
+        builder.addCase(removeTodolistTC.fulfilled, (state, action) => {
+                if (action.payload) {
+                    delete state[action.payload.todolistId];
+                }
             }
         );
-        builder.addCase(setTodolistsAC, (state, action) => {
+        builder.addCase(setTodolistsThunk.fulfilled, (state, action) => {
                 action.payload.todolists.map(tl => state[tl.id] = []);
             }
         );
@@ -272,10 +264,10 @@ export type ActionType =
 // ReturnType<typeof addTaskAC>
 // | ReturnType<typeof removeTaskAC>
 //     | ReturnType<typeof updateTaskAC>
-    // | AddTodolistACType
-    | AddTodolistActionType
-    | RemoveTodolistActionType
-    | SetTodolistsACType
+// | AddTodolistACType
+//     | AddTodolistActionType
+    // | RemoveTodolistActionType
+    // | SetTodolistsACType
     // | ReturnType<typeof setTasksAC>
     | ReturnType<typeof changeTaskEntityStatus>
 
