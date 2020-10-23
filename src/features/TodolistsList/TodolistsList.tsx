@@ -16,9 +16,10 @@ import {AddItemForm} from "../../components/AddItemForm/AddItemForm";
 import {TodoList} from "./Todolist/TodoList";
 import {FilterValueType} from "../../app/AppWithRedux";
 import {Redirect} from "react-router-dom";
+import {selectIsLoggedIn} from "../Auth/selectors";
 
 export const TodolistsList: React.FC = () => {
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn);
+    const isLoggedIn = useSelector(selectIsLoggedIn);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -67,7 +68,7 @@ export const TodolistsList: React.FC = () => {
 
     // Изменение тайтла todoList
     const changeTitleTodoList = useCallback((todoListId: string, title: string) => {
-        const action = changeTodolistTitleTC({id:todoListId, title});
+        const action = changeTodolistTitleTC({id: todoListId, title});
         dispatch(action);
     }, [dispatch]);
 

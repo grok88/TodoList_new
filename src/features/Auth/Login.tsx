@@ -6,6 +6,7 @@ import {Redirect} from 'react-router-dom';
 import {FormikHelpers, useFormik} from "formik";
 import {loginTC} from './auth-reducer';
 import {LoginErrorType, LoginParamsType} from "../../api/todolists-api";
+import {selectIsLoggedIn} from "./selectors";
 
 
 type FormValuesType = {
@@ -32,7 +33,8 @@ const validate = (values: LoginParamsType) => {
 
 export const Login = () => {
 
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn);
+    const isLoggedIn = useSelector(selectIsLoggedIn);
+
     const dispatch = useAppDispatch();
 
     const formik = useFormik({

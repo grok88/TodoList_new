@@ -13,12 +13,13 @@ import {
 import {Menu} from '@material-ui/icons';
 import {TodolistsList} from "../features/TodolistsList/TodolistsList";
 import {useDispatch, useSelector} from "react-redux";
-import {AppRootStateType} from "../state/store";
-import {initializeAppTC, RequestStatusType} from '../state/app-reducer';
+import {initializeAppTC} from '../state/app-reducer';
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
 import {Route} from "react-router-dom";
-import {Login} from "../features/Login/Login";
-import {logoutTC} from '../features/Login/auth-reducer';
+import {Login} from "../features/Auth/Login";
+import {logoutTC} from '../features/Auth/auth-reducer';
+import {selectIsInitialized, selectStatus} from "./selectors";
+import {authSelectors} from "../features/Auth";
 
 export type FilterValueType = "all" | "active" | "completed";
 
@@ -27,11 +28,13 @@ export type FilterValueType = "all" | "active" | "completed";
 //     [key: string]: Array<TaskType>;
 // }
 
+
 function AppWithRedux() {
 
-    const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
-    const isInitialized = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized);
-    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn);
+    const status = useSelector(selectStatus);
+    const isInitialized = useSelector(selectIsInitialized);
+    const isLoggedIn = useSelector(authSelectors.selectIsLoggedIn);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
