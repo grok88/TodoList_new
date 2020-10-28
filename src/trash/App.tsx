@@ -195,7 +195,7 @@ function App() {
         setTasks({...tasks});
     }
     // Добавление таски
-    const addTodoList = (title: string) => {
+    const addTodoList = async(title: string) => {
         let todoList: TodolistDomainType = {
             id: v1(),
             title,

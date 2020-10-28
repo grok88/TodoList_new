@@ -4,8 +4,8 @@ import {AddBox} from "@material-ui/icons";
 
 
 type AddItemFormType = {
-    addItem: (title: string) => void;
-    disabled?:boolean;
+    addItem: (title: string) => Promise<any>;
+    disabled?: boolean;
 }
 
 export const AddItemForm = React.memo((props: AddItemFormType) => {
@@ -33,10 +33,16 @@ export const AddItemForm = React.memo((props: AddItemFormType) => {
     }
 
 
-    const addItemHandler = () => {
+    const addItemHandler = async () => {
         if (valueTask.trim()) {
-            props.addItem(valueTask);
-            setValueTask('');
+            try {
+                props.addItem(valueTask);
+                setValueTask('');
+            } catch (e) {
+                setError(e.message);
+            }
+
+
         } else {
             setError('Title is required');
         }
@@ -53,18 +59,19 @@ export const AddItemForm = React.memo((props: AddItemFormType) => {
                    className={error ? 'error' : ''}
             />*/}
             <TextField disabled={props.disabled}
-                variant={"outlined"}
-                label={"Title"}
-                helperText={error}
-                error={!!error}
-                value={valueTask}
-                onChange={onChangeHandler}
-                onKeyPress={onKeyPressHandler}
+                       variant={"outlined"}
+                       label={"Title"}
+                       helperText={error}
+                       error={!!error}
+                       value={valueTask}
+                       onChange={onChangeHandler}
+                       onKeyPress={onKeyPressHandler}
                 // className={error ? 'error' : ''}
             />
             {/*<button onClick={addItemHandler}>+</button>*/}
             {/*<Button onClick={addItemHandler} variant={"contained"} color={"primary"}>+</Button>*/}
-            <IconButton onClick={addItemHandler} color={"primary"} disabled={props.disabled}>
+            <IconButton onClick={addItemHandler} color={"primary"} disabled={props.disabled}
+                        style={{marginLeft: '5px'}}>
                 <AddBox/>
             </IconButton>
             {/*{error && <div className={'error-message'}>{error}</div>}*/}

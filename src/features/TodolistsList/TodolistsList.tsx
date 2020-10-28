@@ -80,7 +80,7 @@ export const TodolistsList: React.FC = () => {
     }, [dispatch]);
 
     // Добавление todoList
-    const addTodoList = useCallback((title: string) => {
+    const addTodoList = useCallback(async (title: string) => {
         dispatch(addTodolistTC(title));
     }, [dispatch]);
 
@@ -92,12 +92,12 @@ export const TodolistsList: React.FC = () => {
             <Grid container style={{padding: "10px"}}>
                 <AddItemForm addItem={addTodoList}/>
             </Grid>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} style={{flexWrap:'nowrap', overflowX:"scroll"}}>
                 {
                     todolists.map((tl) => {
                         return (
                             <Grid item key={tl.id}>
-                                <Paper style={{padding: "10px"}} elevation={3}>
+                                <div style={{ width:'300px'}}>
                                     <TodoList
                                         entityStatus={tl.entityStatus}
                                         title={tl.title}
@@ -112,7 +112,7 @@ export const TodolistsList: React.FC = () => {
                                         changeTitle={changeTitle}
                                         changeTitleTodoList={changeTitleTodoList}
                                     />
-                                </Paper>
+                                </div>
                             </Grid>
                         )
                     })

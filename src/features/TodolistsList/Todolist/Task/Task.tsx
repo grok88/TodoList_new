@@ -24,7 +24,7 @@ export const Task = React.memo((props: TaskPropsType) => {
         props.changeTitle(props.id, props.todoListId, title);
     }, [props.changeTitle, props.id, props.todoListId]);
     return (
-        <li key={props.id} className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>
+        <li key={props.id} className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''} style={{position:'relative'}}>
             {/* <input type="checkbox"
                                        checked={isDone}
                                        onChange={onChangeHandler}/>*/}
@@ -35,8 +35,8 @@ export const Task = React.memo((props: TaskPropsType) => {
                           disabled={props.task.entityStatus === 'loading'}/>
             {/*<span>{title}</span>*/}
             {/*<button onClick={onRemoveHandler}>x</button>*/}
-            <IconButton onClick={onRemoveHandler} disabled={props.task.entityStatus === 'loading'}>
-                <Delete/>
+            <IconButton size={'small'} onClick={onRemoveHandler} disabled={props.task.entityStatus === 'loading'} style={{position:'absolute', top:'5px', right:'2px'}}>
+                <Delete fontSize={'small'}/>
             </IconButton>
         </li>
     )
